@@ -25,7 +25,7 @@ System.out.println(parser.parse("1 + 2f(x0, y0)/3"));            // 21.0
 ```
 
 ### Built-in functions
-MathParser identifies all static methods in [Math](https://docs.oracle.com/javase/8/docs/api/java/lang/Math.html) and [Built-in Functions](https://github.com/Aghajari/MathParser/blob/main/MathParser/src/com/aghajari/math/Functions.java) and functions are case-insensitive.
+MathParser identifies all static methods in [Math](https://docs.oracle.com/javase/8/docs/api/java/lang/Math.html) and [Built-in Functions](https://github.com/Aghajari/MathParser/blob/main/MathParser/src/com/aghajari/math/Functions.java). Functions and Variables are case-insensitive.
 
 ```java
 System.out.println(parser.parse("sin(3pi/2) + tan(45°)"));
