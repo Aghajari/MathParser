@@ -92,7 +92,7 @@ System.out.println(parser.parse("minus(100, 25, 5, 2)"));        // 68.0
 License
 =======
 
-    Copyright 2020 Amir Hossein Aghajari
+    Copyright 2022 Amir Hossein Aghajari
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
