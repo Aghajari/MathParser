@@ -11,7 +11,6 @@ public class Main {
 
     public static void main(String[] args) throws MathParserException {
         Scanner scanner = new Scanner(System.in);
-
         MathParser parser = MathParser.create();
 
         for (; ; ) {
