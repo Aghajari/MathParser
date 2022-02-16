@@ -51,7 +51,7 @@ Supports IF conditions:
 ```java
 System.out.println(parser.parse("2 + if(2^5 >= 5!, 1, 0)"));     // 2.0
 
-parser.addExpression("gcd(x, y) = if(y == 0, x, gcd(y, x%y))");  // GCD Recursive
+parser.addExpression("gcd(x, y) = if(y = 0, x, gcd(y, x % y))"); // GCD Recursive
 System.out.println(parser.parse("gcd(8, 20)"));                  // 4.0
 ```
 GCD Recursive was only an example, gcd is a built-in function so you don't need to add it as an expression.
