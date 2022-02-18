@@ -278,6 +278,11 @@ public class Functions {
         return result;
     }
 
+    // ignore Math.log as base e
+    public static double log(double a) {
+        return Math.log10(a);
+    }
+
     public static double mod(double a, double b) {
         return a % b;
     }
@@ -287,7 +292,7 @@ public class Functions {
     }
 
     public static double not(double a) {
-        return ~((int) a);
+        return ~((long) a);
     }
 
     public static double or(double a, double b) {
@@ -303,15 +308,15 @@ public class Functions {
     }
 
     public static double shiftLeft(double a, double b) {
-        return (int) a << (int) b;
+        return (long) a << (long) b;
     }
 
     public static double shiftRight(double a, double b) {
-        return (int) a >> (int) b;
+        return (long) a >> (long) b;
     }
 
     public static double unsignedShiftRight(double a, double b) {
-        return (int) a >>> (int) b;
+        return (long) a >>> (long) b;
     }
 
     public static double sign(double a) {
@@ -356,5 +361,118 @@ public class Functions {
                 break;
         }
         return parser.parse(c ? a : b);
+    }
+
+
+    public static double cot(double x) {
+        return 1.0 / Math.tan(x);
+    }
+
+    public static double arccos(double x) {
+        return Math.acos(x);
+    }
+
+    public static double acosh(double x) {
+        return arccosh(x);
+    }
+
+    public static double arccosh(double x) {
+        return Math.log(x + (Math.sqrt(x * x - 1)));
+    }
+
+    public static double arcsin(double x) {
+        return Math.asin(x);
+    }
+
+    public static double asinh(double x) {
+        return arcsinh(x);
+    }
+
+    public static double arcsinh(double x) {
+        return Math.log(x + (Math.sqrt(x * x + 1)));
+    }
+
+    public static double sec(double x) {
+        return 1.0 / Math.cos(x);
+    }
+
+    public static double asec(double x) {
+        return arcsec(x);
+    }
+
+    public static double arcsec(double x) {
+        return Math.acos(1.0 / x);
+    }
+
+    public static double sech(double x) {
+        return 1.0 / Math.cosh(x);
+    }
+
+    public static double asech(double x) {
+        return arcsech(x);
+    }
+
+    public static double arcsech(double x) {
+        return arccosh(1.0 / x);
+    }
+
+    public static double csc(double x) {
+        return 1.0 / Math.sin(x);
+    }
+
+    public static double acsc(double x) {
+        return arccsc(x);
+    }
+
+    public static double arccsc(double x) {
+        return Math.asin(1.0 / x);
+    }
+
+    public static double csch(double x) {
+        return 1.0 / Math.sinh(x);
+    }
+
+    public static double acsch(double x) {
+        return arccsch(x);
+    }
+
+    public static double arccsch(double x) {
+        return arcsinh(1.0 / x);
+    }
+
+    public static double arctan(double x) {
+        return Math.atan(x);
+    }
+
+    public static double atanh(double x) {
+        return arctanh(x);
+    }
+
+    public static double arctanh(double x) {
+        return 0.5 * Math.log((1 + x) / (1 - x));
+    }
+
+    public static double coth(double x) {
+        return 1.0 / Math.tanh(x);
+    }
+
+    public static double acot(double x) {
+        return arccot(x);
+    }
+
+    public static double arccot(double x) {
+        return arctan(1.0 / x);
+    }
+
+    public static double acoth(double x) {
+        return arccoth(x);
+    }
+
+    public static double arccoth(double x) {
+        return arctanh(1.0 / x);
+    }
+
+    public static double c(double x, double y) {
+        return factorial(x) / (factorial(y) * factorial(x - y));
     }
 }

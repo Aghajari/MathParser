@@ -417,7 +417,6 @@ public class MathParser implements Cloneable {
         src = Utils.realTrim(src);
         if (src.startsWith("(") && src.endsWith(")") && !src.substring(1).contains("("))
             src = src.substring(1, src.length() - 1);
-        Utils.validateBalancedParentheses(src);
 
         while (src.contains("(") || src.contains(")")) {
             Matcher matcher = Utils.innermostParentheses.matcher(src);

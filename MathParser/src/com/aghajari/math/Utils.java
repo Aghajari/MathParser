@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public class Utils {
 
     /* used to check if parentheses are balanced */
-    public final static Pattern balancedParentheses = Pattern.compile("\\((?:[^)(]+|\\((?:[^)(]+|\\([^)(]*\\))*\\))*\\)");
+    //public final static Pattern balancedParentheses = Pattern.compile("\\((?:[^)(]+|\\((?:[^)(]+|\\([^)(]*\\))*\\))*\\)");
     /* used to find the innermost parentheses */
     public final static Pattern innermostParentheses = Pattern.compile("(\\([^\\(]*?\\))");
     /* used to split function arguments by comma */
@@ -46,11 +46,27 @@ public class Utils {
      * @throws BalancedParenthesesException If parentheses aren't balanced
      */
     public static void validateBalancedParentheses(String src) throws BalancedParenthesesException {
-        String dest = src.replaceAll(balancedParentheses.pattern(), "");
+        /*String dest = src.replaceAll(balancedParentheses.pattern(), "");
         if (dest.contains(")"))
             throw new BalancedParenthesesException(src, src.indexOf(dest.substring(dest.indexOf(")"))) + 1);
         else if (dest.contains("("))
-            throw new BalancedParenthesesException(src, src.indexOf(dest.substring(dest.indexOf("("))) + 1);
+            throw new BalancedParenthesesException(src, src.indexOf(dest.substring(dest.indexOf("("))) + 1);*/
+
+        if (Utils.realTrim(src).contains("()"))
+            throw new BalancedParenthesesException(null, -1);
+
+        int opened = 0;
+        for (int i = 0; i < src.length(); ++i)
+            if (src.charAt(i) == '(')
+                opened++;
+            else if (src.charAt(i) == ')') {
+                opened--;
+                if (opened < 0)
+                    throw new BalancedParenthesesException(src, i + 1);
+            }
+
+        if (opened != 0)
+            throw new BalancedParenthesesException(src, src.length());
     }
 
     /**
