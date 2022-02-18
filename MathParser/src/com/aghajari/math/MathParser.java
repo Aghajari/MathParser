@@ -50,7 +50,7 @@ import java.util.regex.Matcher;
  *     System.out.println(parser.parse("Σ(i, 2i^2, 1, 5)"));            // 220.0
  * </code></pre>
  * <p>
- * Supports factorial, binary, hexadecimal, octal:
+ * Supports factorial, binary, hexadecimal and octal:
  * <pre><code>
  *     System.out.println(parser.parse("5!/4"));                        // 30.0
  *     System.out.println(parser.parse("(0b100)!"));                    // 4! = 24.0
@@ -63,21 +63,26 @@ import java.util.regex.Matcher;
  *     parser.addExpression("gcd(x, y) = if(y == 0, x, gcd(y, x%y))");  // GCD Recursive
  *     System.out.println(parser.parse("gcd(8, 20)"));                  // 4.0
  * </code></pre>
+ * Supports array arguments:
+ * <pre><code>
+ *     System.out.println(parser.parse("sum(10, 20, 30, 40)"));         // 100.0
+ *     System.out.println(parser.parse("gcd(8, 20, 150)"));             // 2.0
+ * </code></pre>
  * <p>
  * Let's see how does <code>MathParser</code> work with an example:
- * exp = cos(x) ^ 2 + (x * sin(x) + 1) / 2
+ * exp = cos(x) ^ 2 + (1 + x * sin(x)) / 2
  * <pre>
- * - let tmp1 be cos(x) -> exp = tmp1 ^ 2 + (x * sin(x) + 1) / 2
+ * - let tmp1 be cos(x) -> exp = tmp1 ^ 2 + (1 + x * sin(x)) / 2
  *  + tmp1 is ready                                                     // tmp1 = cos(x)
- * - let tmp2 be sin(x) -> exp = tmp1 ^ 2 + (x * tmp2 + 1) / 2
+ * - let tmp2 be sin(x) -> exp = tmp1 ^ 2 + (1 + x * tmp2) / 2
  *  + tmp2 is ready                                                     // tmp2 = sin(x)
- * - let tmp3 be (x * tmp2 + 1) -> exp = tmp1 ^ 2 + tmp3 / 2
- *  + tmp3 = x * tmp2 + 1
- *  + order tmp3 operations -> tmp3 = (x * tmp2) + 1
- *      - let tmp4 be (x * tmp2) -> tmp3 = tmp4 + 1
+ * - let tmp3 be (1 + x * tmp2) -> exp = tmp1 ^ 2 + tmp3 / 2
+ *  + tmp3 = 1 + x * tmp2
+ *  + order tmp3 operations -> tmp3 = 1 + (x * tmp2)
+ *      - let tmp4 be (x * tmp2) -> tmp3 = 1 + tmp4
  *          + tmp4 is ready                                             // tmp4 = x * tmp2
- *  + tmp3 = tmp4 + 1
- *  + tmp3 is ready                                                     // tmp3 = tmp4 + 1
+ *  + tmp3 = 1 + tmp4
+ *  + tmp3 is ready                                                     // tmp3 = 1 + tmp4
  * - exp = tmp1 ^ 2 + tmp3 / 2
  *  + order exp operations -> exp = (tmp1 ^ 2) + tmp3 / 2
  *      - let tmp5 be (tmp1 ^ 2) -> exp = tmp5 + tmp3 / 2
@@ -94,19 +99,19 @@ import java.util.regex.Matcher;
  * tmp1 = cos(x)
  * tmp2 = sin(x)
  * tmp4 = x * tmp2
- * tmp3 = tmp4 + 1
+ * tmp3 = 1 + tmp4
  * tmp5 = tmp1 ^ 2
  * tmp6 = tmp3 / 2
  * exp  = tmp5 + tmp6
  * <p>
  * As you can see, all variables contain only a very small part of
- * the original expression and all and all the operations in variables
+ * the original expression and all the operations in variables
  * have the same priority, So makes the calculation very easy.
  * {@link SimpleParser}, In order of the above list, starts calculating
  * the variables separately to reach the exp which is the final answer.
  *
  * @author AmirHossein Aghajari
- * @version 1.00
+ * @version 1.0.0
  */
 public class MathParser implements Cloneable {
 
@@ -520,31 +525,39 @@ public class MathParser implements Cloneable {
      */
     private double orderAgain(String src, String main) throws MathParserException {
         boolean allInSamePriority = true;
-        int last = -1;
+        int highestPriority = -1;
         for (int i = 0; i < order.length; i++) {
-            if (src.contains(order[i] + "")) {
-                if (last == -1)
-                    last = orderPriority[i];
-                else if (orderPriority[i] != last) {
+            if (src.contains(String.valueOf(order[i]))) {
+                if (highestPriority != -1 && orderPriority[i] != highestPriority) {
                     allInSamePriority = false;
-                    break;
+                    break; // the first ones always have higher priority
                 }
+                highestPriority = Math.max(highestPriority, orderPriority[i]);
             }
         }
-        if (!allInSamePriority)
-            for (char op : order) {
-                int ind = src.indexOf(op);
-                if (ind == -1)
-                    continue;
 
+        if (!allInSamePriority) {
+            int ind = -1;
+            char op = '+';
+            for (int i = 0; i < order.length; i++) {
+                if (orderPriority[i] == highestPriority) {
+                    int ind2 = src.indexOf(order[i]);
+                    if (ind2 != -1 && (ind == -1 || ind > ind2)) {
+                        ind = ind2;
+                        op = order[i];
+                    }
+                }
+            }
+
+            if (ind != -1) {
                 int index;
                 String wordAfter = src.substring(ind + 1, ind + 1 + Utils.findBestIndex(src.substring(ind + 1), false));
                 String wordBefore = src.substring(index = Utils.findBestIndex(src.substring(0, ind), true), ind);
 
                 src = src.substring(0, index) + "(" + wordBefore + op + wordAfter + ")"
                         + src.substring(ind + wordAfter.length() + 1);
-                break;
             }
+        }
 
         if (src.contains("(") || src.contains(")"))
             return calculate(src, main);

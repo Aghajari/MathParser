@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 public class Main {
 
+
     public static void main(String[] args) throws MathParserException {
         Scanner scanner = new Scanner(System.in);
         MathParser parser = MathParser.create();
@@ -27,9 +28,7 @@ public class Main {
 
                 } catch (MathParserException e) {
                     if (e instanceof MathVariableNotFoundException) {
-                        if (e.getIndex() != -1)
-                            System.out.println(e.getCursor());
-                        System.out.println(e.getLocalMessage());
+                        System.out.println(e.getMessage());
                         continue;
                     }
                     e.printStackTrace();
