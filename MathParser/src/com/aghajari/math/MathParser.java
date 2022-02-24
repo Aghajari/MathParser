@@ -357,7 +357,7 @@ public class MathParser implements Cloneable {
         for (MathVariable variable : variables) {
             if (!variable.hasFound) {
                 validate(variable.expression);
-                variable.answer = new Double[]{round(calculate(fixDegrees(variable.expression), variable.original))};
+                variable.answer = new Double[]{round(calculate(firstSimplify(variable.expression), variable.original))};
                 variable.hasFound = true;
                 //System.out.println(variable.name + " = " + variable.getAnswer());
             }
@@ -745,7 +745,8 @@ public class MathParser implements Cloneable {
      * Adds a const variable to {@link #innerVariables};
      */
     private void addConst(String name, double value) {
-        removeVariable(name);
+        // variables can update the default constants
+        //removeVariable(name);
         innerVariables.add(new MathVariable(name, value));
     }
 
